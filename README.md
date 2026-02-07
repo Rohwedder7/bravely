@@ -1,6 +1,6 @@
 # Brev.ly (bravely)
 
-Encurtador de links — backend (Fastify + Drizzle + PostgreSQL) e frontend (React + Vite). Compatível com banco PostgreSQL do Supabase (IPv4/IPv6).
+Encurtador de links — backend (Fastify + Drizzle + PostgreSQL) e frontend (React + Vite). Compatível com banco PostgreSQL do Supabase (IPv6).
 
 ---
 
