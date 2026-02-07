@@ -1,0 +1,33 @@
+# Dependências (serão instaladas no build)
+node_modules
+**/node_modules
+
+# Frontend (apenas backend na imagem)
+web
+
+# Build local (reconstruído no container)
+dist
+
+# Controle de versão e IDE
+.git
+.gitignore
+.cursor
+*.md
+
+# Ambiente e secrets (não copiar para a imagem)
+.env
+.env.*
+!.env.example
+
+# Testes e ferramentas de dev
+*.test.ts
+*.spec.ts
+coverage
+.nyc_output
+
+# Logs e temporários
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.tmp
+temp
