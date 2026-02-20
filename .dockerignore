@@ -2,9 +2,6 @@
 node_modules
 **/node_modules
 
-# Frontend (apenas backend na imagem)
-web
-
 # Build local (reconstruído no container)
 dist
 

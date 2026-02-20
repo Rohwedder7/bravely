@@ -1,10 +1,13 @@
 const frontendUrlFromVite = import.meta.env.VITE_FRONTEND_URL as string | undefined
 const backendUrlFromVite = import.meta.env.VITE_BACKEND_URL as string | undefined
 
-// No browser: usa o mesmo host da página na porta 3333 (funciona no celular na mesma rede)
+// Quando a página e a API estão na mesma origem (ex.: Docker servindo SPA + API na 3333), usa URL relativa
 function defaultBackendUrl(): string {
   if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:3333`
+    const origin = window.location.origin
+    const apiOrigin = `${window.location.protocol}//${window.location.hostname}:3333`
+    if (origin === apiOrigin) return "" // mesma origem: chamadas relativas (/links)
+    return apiOrigin
   }
   return "http://localhost:3333"
 }

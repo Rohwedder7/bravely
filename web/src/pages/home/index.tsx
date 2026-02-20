@@ -21,7 +21,7 @@ type FormData = z.infer<typeof schema>
 export default function Home() {
   const qc = useQueryClient()
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["links"],
     queryFn: listLinks,
   })
@@ -168,7 +168,12 @@ export default function Home() {
             <div className="loading-state">Carregando links...</div>
           )}
           {isError && (
-            <div className="error-state">Erro ao carregar os links. Tente novamente.</div>
+            <div className="error-state" style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+              <span>Erro ao carregar os links. Verifique se a API está rodando e se o banco está acessível.</span>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => refetch()}>
+                Tente novamente
+              </button>
+            </div>
           )}
 
           {!isLoading && !isError && links.length === 0 && (
