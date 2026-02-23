@@ -4,6 +4,26 @@ Encurtador de links — backend (Fastify + Drizzle + PostgreSQL) e frontend (Rea
 
 ---
 
+## Para o avaliador (checklist rápido)
+
+1. **Clone o repositório** e entre na pasta do projeto.
+2. **Crie o arquivo `.env`** na raiz (copie de `.env.example`). Preencha `DATABASE_URL` com uma connection string PostgreSQL (ex.: Supabase — Connection pooler, modo Transaction, porta 6543).
+3. **Instale dependências e rode as migrações:**
+   ```bash
+   pnpm install
+   pnpm db:migrate
+   ```
+4. **Build e execução com Docker:**
+   ```bash
+   docker build -t brevly .
+   docker run -p 3333:3333 --env-file .env brevly
+   ```
+5. **Acesse:** http://localhost:3333
+
+**Alternativa sem Docker:** após o passo 3, use `pnpm build` e `pnpm start` (a API serve o frontend na mesma porta).
+
+---
+
 ## Rodar localmente (sem Docker)
 
 **Monorepo (pnpm):** raiz só orquestra; pacotes `server` e `web`.
@@ -46,7 +66,18 @@ DATABASE_URL=postgresql://postgres.SEU_PROJECT_REF:SUA_SENHA@aws-0-us-east-1.poo
 
 **Variáveis opcionais:** `PORT` (padrão 3333), `CLOUDFLARE_*` (para CSV em R2). Veja `.env.example`.
 
-### 2. Build da imagem
+### 2. Rodar as migrações do banco (primeira vez)
+
+Antes do primeiro uso, crie as tabelas no banco. Na **raiz do projeto**, com o `.env` já configurado:
+
+```bash
+pnpm install
+pnpm db:migrate
+```
+
+(Se preferir só npm: `cd server && npm install && npm run db:migrate`.)
+
+### 3. Build da imagem
 
 Na pasta raiz do projeto:
 
@@ -56,7 +87,7 @@ docker build -t brevly .
 
 O build compila o frontend (Vite) e o backend (TypeScript) e gera a imagem `brevly`.
 
-### 3. Executar o container
+### 4. Executar o container
 
 ```bash
 docker run -p 3333:3333 --env-file .env brevly
@@ -65,7 +96,7 @@ docker run -p 3333:3333 --env-file .env brevly
 - `-p 3333:3333` — expõe a porta 3333 do container no host
 - `--env-file .env` — carrega as variáveis do `.env` (rode a partir da pasta do projeto para o caminho estar correto)
 
-### 4. Acessar a aplicação
+### 5. Acessar a aplicação
 
 Abra no navegador: **http://localhost:3333**
 
@@ -88,7 +119,7 @@ Com o app rodando no computador (Docker ou `pnpm start` / `pnpm dev:server` + `p
 
 O servidor já escuta em todas as interfaces (`0.0.0.0`), então aceita conexões da rede local. Se não abrir, verifique se o firewall do computador permite conexões na porta 3333.
 
-### 5. Verificar os logs
+### 6. Verificar os logs
 
 Para ver se a conexão com o banco está OK:
 
