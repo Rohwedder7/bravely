@@ -1,9 +1,9 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import { format } from "fast-csv"
 import { PassThrough } from "node:stream"
-import { env } from "../env.js"
-import { db } from "../db/client.js"
-import { links } from "../db/schema.js"
+import { env } from "../env"
+import { db } from "../db/client"
+import { links } from "../db/schema"
 import { desc } from "drizzle-orm"
 
 function getR2Client() {

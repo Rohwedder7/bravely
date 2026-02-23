@@ -1,6 +1,6 @@
-import { createApp } from "./app.js"
-import { env } from "./env.js"
-import { pool } from "./db/client.js"
+import { createApp } from "./app"
+import { env } from "./env"
+import { pool } from "./db/client"
 
 // Diagnóstico: mostra o host do banco (evita surpresa com "base" por .env quebrado)
 try {

@@ -1,11 +1,11 @@
 import fastif from "fastify"
 import cors from "@fastify/cors"
 import fastifyStatic from "@fastify/static"
-import { linksRoutes } from "./routes/links.js"
+import { linksRoutes } from "./routes/links"
 import { ZodError } from "zod"
 import path from "node:path"
 import fs from "node:fs"
-import { env } from "./env.js"
+import { env } from "./env"
 
 export async function createApp() {
   const app = fastif({ logger: true })

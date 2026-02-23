@@ -9,7 +9,12 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY server/package.json ./server/
 COPY web/package.json ./web/
 
-RUN pnpm install --frozen-lockfile
+# Cache do pnpm: após um build com sucesso, próximos builds usam o cache (menos rede)
+# Mais tolerante a rede: timeout 5min, 5 retentativas, menos concorrência
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    echo "fetch-timeout=300000" >> .npmrc && echo "fetch-retries=5" >> .npmrc && \
+    echo "network-concurrency=4" >> .npmrc && \
+    pnpm install --frozen-lockfile
 
 COPY server ./server
 COPY web ./web
@@ -37,7 +42,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY server/package.json ./server/
 COPY web/package.json ./web/
 
-RUN pnpm install --frozen-lockfile --prod
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    echo "fetch-timeout=300000" >> .npmrc && echo "fetch-retries=5" >> .npmrc && \
+    echo "network-concurrency=4" >> .npmrc && \
+    pnpm install --frozen-lockfile --prod
 
 # Artefatos de build: backend compilado + frontend estático
 COPY --from=builder /app/server/dist ./server/dist

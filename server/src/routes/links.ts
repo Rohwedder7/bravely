@@ -1,10 +1,10 @@
 import type { FastifyInstance } from "fastify"
 import { z } from "zod"
-import { db } from "../db/client.js"
-import { links } from "../db/schema.js"
+import { db } from "../db/client"
+import { links } from "../db/schema"
 import { and, desc, eq, lt, ilike, sql, or } from "drizzle-orm"
 import { nanoid } from "nanoid"
-import { generateLinksCsvBuffer } from "../services/export-links-csv.js"
+import { generateLinksCsvBuffer } from "../services/export-links-csv"
 
 const shortUrlSchema = z.string().min(3).max(40).regex(/^[a-zA-Z0-9_-]+$/, "Short URL can only contain letters, numbers, hyphens, and underscores.")
 

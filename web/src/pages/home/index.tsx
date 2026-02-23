@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createLink, deleteLink, listLinks } from "../../lib/links-api"
 import { env } from "../../lib/env"
-import { Link2, Copy, ExternalLink, Trash2, Download } from "lucide-react"
+import { Copy, Trash2, Download } from "lucide-react"
 
 const schema = z.object({
   originalUrl: z.string().url("Informe uma URL válida (com http/https)."),
@@ -91,23 +91,23 @@ export default function Home() {
     <div className="app-container">
       <header className="app-header">
         <h1 className="app-logo">
-          Brev.<span>ly</span>
+          <span className="app-logo-icon" aria-hidden>@</span>
+          brev.ly
         </h1>
-        <p className="app-subtitle">Encurte seus links de forma simples e rápida</p>
       </header>
 
       <div className="home-layout">
         <section className="card home-form-card">
-          <h2 className="card-title">Novo link encurtado</h2>
+          <h2 className="card-title">Novo link</h2>
           <form id="create-link-form" onSubmit={handleSubmit(onSubmit)}>
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 16 }}>
               <label className="label" htmlFor="originalUrl">
-                URL original
+                Link original
               </label>
               <input
                 id="originalUrl"
                 {...register("originalUrl")}
-                placeholder="https://exemplo.com/pagina"
+                placeholder="linkedin.com/in/myprofile"
                 className={`input ${errors.originalUrl ? "input-error" : ""}`}
                 disabled={isSubmitting}
               />
@@ -116,9 +116,9 @@ export default function Home() {
               )}
             </div>
 
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ marginBottom: 20 }}>
               <label className="label" htmlFor="short">
-                Link Encurtado
+                Link encurtado
               </label>
               <input
                 id="short"
@@ -131,56 +131,35 @@ export default function Home() {
                 <p className="error-message">{errors.short.message}</p>
               )}
             </div>
+
+            <div className="form-actions">
+              <button
+                type="submit"
+                form="create-link-form"
+                className="btn btn-primary"
+                disabled={isSubmitting || createMut.isPending}
+              >
+                {isSubmitting || createMut.isPending ? "Salvando..." : "Salvar link"}
+              </button>
+            </div>
           </form>
-          <div className="form-actions">
-            <button
-              type="submit"
-              form="create-link-form"
-              className="btn btn-primary"
-              disabled={isSubmitting || createMut.isPending}
-            >
-              <Link2 size={18} />
-              {isSubmitting || createMut.isPending ? "Criando..." : "Criar link"}
-            </button>
+        </section>
+
+        <section className="card home-links-panel">
+          <div className="meus-links-header">
+            <h2 className="meus-links-title">Meus links</h2>
             <form
               method="POST"
               action={exportCsvUrl}
               target="_blank"
-              className="form-csv"
+              style={{ display: "inline-block" }}
             >
-              <button type="submit" className="btn btn-secondary">
-                <Download size={18} />
+              <button type="submit" className="btn btn-secondary btn-sm">
+                <Download size={16} style={{ flexShrink: 0 }} />
                 Baixar CSV
               </button>
             </form>
           </div>
-        </section>
-
-        <section className="home-links-panel">
-          <div className="section-header">
-            <h2 className="section-title">Seus links</h2>
-            <span className="section-count">
-              {links.length} {links.length === 1 ? "item" : "itens"}
-            </span>
-          </div>
-
-          {isLoading && (
-            <div className="loading-state">Carregando links...</div>
-          )}
-          {isError && (
-            <div className="error-state" style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
-              <span>Erro ao carregar os links. Verifique se a API está rodando e se o banco está acessível.</span>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => refetch()}>
-                Tente novamente
-              </button>
-            </div>
-          )}
-
-          {!isLoading && !isError && links.length === 0 && (
-            <div className="empty-state">
-              <p>Nenhum link ainda. Crie o primeiro ao lado.</p>
-            </div>
-          )}
 
           {deleteError && (
             <div
@@ -205,6 +184,24 @@ export default function Home() {
             </div>
           )}
 
+          {isLoading && (
+            <div className="loading-state">Carregando links...</div>
+          )}
+          {isError && (
+            <div className="error-state" style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+              <span>Erro ao carregar os links. Verifique se a API está rodando e se o banco está acessível.</span>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => refetch()}>
+                Tente novamente
+              </button>
+            </div>
+          )}
+
+          {!isLoading && !isError && links.length === 0 && (
+            <div className="empty-state">
+              <p>Nenhum link ainda. Crie o primeiro ao lado.</p>
+            </div>
+          )}
+
           {!isLoading && !isError && links.length > 0 && (
             <div className="links-grid">
               {links.map((l) => (
@@ -213,29 +210,22 @@ export default function Home() {
                     <div className="link-item-text">
                       <p className="link-item-url">{shortFull(l.short)}</p>
                       <p className="link-item-original">{l.originalUrl}</p>
-                      <p className="link-item-meta">
-                        {l.clicks} {l.clicks === 1 ? "acesso" : "acessos"}
-                      </p>
                     </div>
                     <div className="link-item-actions">
+                      <span className="link-item-meta">
+                        {l.clicks} {l.clicks === 1 ? "acesso" : "acessos"}
+                      </span>
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm"
+                        className="btn btn-secondary btn-icon"
                         onClick={() => navigator.clipboard.writeText(shortFull(l.short))}
                         title="Copiar"
                       >
-                        <Copy size={16} />
-                        Copiar
+                        <Copy size={18} />
                       </button>
-                      <a href={shortFull(l.short)} target="_blank" rel="noreferrer">
-                        <button type="button" className="btn btn-secondary btn-sm">
-                          <ExternalLink size={16} />
-                          Abrir
-                        </button>
-                      </a>
                       <button
                         type="button"
-                        className="btn btn-danger btn-sm"
+                        className="btn btn-danger btn-icon"
                         disabled={deleteMut.isPending}
                         onClick={(e) => {
                           e.preventDefault()
@@ -244,8 +234,7 @@ export default function Home() {
                         }}
                         title="Deletar"
                       >
-                        <Trash2 size={16} />
-                        {deleteMut.isPending ? "..." : "Deletar"}
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
